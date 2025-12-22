@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff, AlertTriangle } from "lucide-react";
+import { toast } from "react-hot-toast";
 import img1 from "../../../../assets/img1.png";
 import img2 from "../../../../assets/img2.png";
 import img3 from "../../../../assets/img3.png";
@@ -67,8 +68,9 @@ const Login: React.FC = () => {
         const formErrors = validateForm();
 
         if (Object.keys(formErrors).length > 0) {
+            // Show validation errors
             Object.values(formErrors).forEach((error) => {
-                if (error) alert(error);
+                if (error) toast.error(error);
             });
             return;
         }
@@ -76,7 +78,7 @@ const Login: React.FC = () => {
         try {
             setIsLoading(true);
             // Simulate login API call
-            console.log("Logging in user:", { email, password });
+            console.log("Logging in user:", { email });
 
             // Simulate rate limit error for demonstration
             if (Math.random() < 0.3) { // 30% chance of rate limit error
@@ -85,7 +87,7 @@ const Login: React.FC = () => {
             }
 
             // Show success message
-            alert("Login successful!");
+            toast.success("Login successful!");
 
             // Navigate to dashboard or home page
             navigate("/");
@@ -94,7 +96,7 @@ const Login: React.FC = () => {
                 err instanceof Error
                     ? err.message
                     : "Login failed. Please try again.";
-            alert(message);
+            toast.error(message);
         } finally {
             setIsLoading(false);
             
@@ -114,8 +116,7 @@ const Login: React.FC = () => {
             {/* Loading Overlay */}
             <div className="flex flex-col justify-center md:flex-row h-screen">
                 {/* Left Side - Form */}
-                <div className="w-full md:w-1/2 bg-white flex items-center justify-center p-8 animate-slide-in-left">
-                    <div className="w-full max-w-sm">
+                <div className="w-full md:w-1/2 bg-white flex items-center justify-center p-8">                    <div className="w-full max-w-sm">
                         <div className="flex justify-center mb-8">
                             <h3 className="font-medium text-4xl overflow-hidden bg-gradient-to-r from-blue-500 to-green-500 bg-clip-text text-transparent">
                                 Welcome back
@@ -123,7 +124,7 @@ const Login: React.FC = () => {
                         </div>
 
                         <p className="text-gray-800 text-center mb-8">
-                            Please sign in to continue your learning journey.
+                            Sign in to manage your work and move projects forward.
                         </p>
 
                         {/* Rate limit warning */}
@@ -222,8 +223,7 @@ const Login: React.FC = () => {
                 </div>
 
                 {/* Right Side - Slideshow */}
-                <div className="hidden w-full md:w-1/2 bg-gradient-to-r from-blue-900/90 to-green-900/90 text-white md:flex flex-col items-center justify-center p-8 rounded-tl-[80px] rounded-bl-[80px] animate-slide-in-left">
-                    {/* Image Slideshow - Centered */}
+                <div className="hidden w-full md:w-1/2 bg-gradient-to-r from-blue-900/90 to-green-900/90 text-white md:flex flex-col items-center justify-center p-8 rounded-tl-[80px] rounded-bl-[80px]">                    {/* Image Slideshow - Centered */}
                     <div className="flex items-center justify-center p-4 flex-grow w-full">
                         <div className="w-full max-w-lg h-96 lg:h-[450px] xl:h-[500px]">
                             <Slideshow
@@ -237,15 +237,13 @@ const Login: React.FC = () => {
 
                     {/* Text Overlay - Positioned below the image */}
                     <div className="w-full text-center mb-6">
-                        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 md:mb-3 animate-fadeIn">
+                        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 md:mb-3">
                             Welcome to Zyro
                         </h2>
-                        <p className="text-sm md:text-base lg:text-lg opacity-90 animate-fadeIn delay-150">
+                        <p className="text-sm md:text-base lg:text-lg opacity-90">
                             Visualize your roadmap. Accelerate your release.
                         </p>
-                    </div>
-
-                    {/* Sign Up Link */}
+                    </div>                    {/* Sign Up Link */}
                     <div className="w-full text-center pb-4">
                         <p className="text-white/80 mb-4">
                             Don't have an account?
