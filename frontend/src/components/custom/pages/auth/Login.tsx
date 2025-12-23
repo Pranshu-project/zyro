@@ -94,7 +94,7 @@ const Login: React.FC = () => {
             
             if (loginUser.fulfilled.match(result)) {
                 toast.success("Login successful!");
-                navigate("/dashboard");
+                navigate("/home");
             } else {
                 // Handle error
                 const errorMessage = result.payload || "Login failed. Please try again.";

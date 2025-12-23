@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../components/custom/navigation/Sidebar";
 import Navbar from "../components/custom/navigation/Navbar";
 
-const DashboardLayout = () => {
+const HomeLayout = () => {
   return (
     <div className="flex h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 text-gray-800">
       {/* Sidebar */}
@@ -22,4 +22,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout;
+export default HomeLayout;
