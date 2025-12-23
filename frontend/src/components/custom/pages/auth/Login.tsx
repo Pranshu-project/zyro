@@ -80,10 +80,11 @@ const Login: React.FC = () => {
         const formErrors = validateForm();
 
         if (Object.keys(formErrors).length > 0) {
-            // Show validation errors
-            Object.values(formErrors).forEach((error) => {
-                if (error) toast.error(error);
-            });
+            // Show only the first validation error
+            const firstError = Object.values(formErrors)[0];
+            if (firstError) {
+                toast.error(firstError);
+            }
             return;
         }
 
@@ -93,7 +94,7 @@ const Login: React.FC = () => {
             
             if (loginUser.fulfilled.match(result)) {
                 toast.success("Login successful!");
-                navigate("/");
+                navigate("/dashboard");
             } else {
                 // Handle error
                 const errorMessage = result.payload || "Login failed. Please try again.";

@@ -102,15 +102,11 @@ const Signup: React.FC = () => {
     const formErrors = validateForm();
 
     if (Object.keys(formErrors).length > 0) {
-      // Show validation errors one by one with delays
-      const errorValues = Object.values(formErrors);
-      errorValues.forEach((error, index) => {
-        if (error) {
-          setTimeout(() => {
-            toast.error(error);
-          }, index * 1000); // 1 second delay between each toast
-        }
-      });
+      // Show only the first validation error
+      const firstError = Object.values(formErrors)[0];
+      if (firstError) {
+        toast.error(firstError);
+      }
       return;
     }
 
@@ -119,11 +115,8 @@ const Signup: React.FC = () => {
       const result = await dispatch(registerUser({ name, email, password }));
       
       if (registerUser.fulfilled.match(result)) {
-        // Show success messages one by one
-        toast.success("Account created successfully 🎉");
-        setTimeout(() => {
-          toast.success("Please check your email for verification");
-        }, 1500);
+        // Show single success message
+        toast.success("Account created! Please check your email for verification 📧");
 
         setTimeout(() => {
           navigate("/login");
