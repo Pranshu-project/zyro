@@ -1,5 +1,8 @@
 import axios from 'axios';
-import { ApiResponse } from './types';
+import { ApiResponse, Issue, CreateIssueRequest, UpdateIssueRequest, IssueStatus, IssuePriority, IssueType } from './types';
+
+// Export types for convenience
+export type { Issue, CreateIssueRequest, UpdateIssueRequest, IssueStatus, IssuePriority, IssueType };
 
 // Create axios instance
 const apiClient = axios.create({
@@ -65,10 +68,10 @@ apiClient.interceptors.response.use(
 // Issue API functions
 export const issueApi = {
   // GET all issues
-  getIssues: async () => {
+  getIssues: async (): Promise<Issue[]> => {
     try {
-      const response = await apiClient.get<ApiResponse<any>>('/issues');
-      return response.data.data;
+      const response = await apiClient.get<ApiResponse<Issue[]>>('/issue');
+      return response.data.data || [];
     } catch (error) {
       console.error('Error fetching issues:', error);
       throw error;
@@ -76,9 +79,9 @@ export const issueApi = {
   },
 
   // GET issue by ID
-  getIssueById: async (id: number) => {
+  getIssueById: async (id: number): Promise<Issue> => {
     try {
-      const response = await apiClient.get<ApiResponse<any>>(`/issues/${id}`);
+      const response = await apiClient.get<ApiResponse<Issue>>(`/issue/${id}`);
       return response.data.data;
     } catch (error) {
       console.error(`Error fetching issue with id ${id}:`, error);
@@ -87,9 +90,9 @@ export const issueApi = {
   },
 
   // POST create issue
-  createIssue: async (issueData: any) => {
+  createIssue: async (issueData: CreateIssueRequest): Promise<Issue> => {
     try {
-      const response = await apiClient.post<ApiResponse<any>>('/issues', issueData);
+      const response = await apiClient.post<ApiResponse<Issue>>('/issue', issueData);
       return response.data.data;
     } catch (error) {
       console.error('Error creating issue:', error);
@@ -98,9 +101,9 @@ export const issueApi = {
   },
 
   // PUT update issue
-  updateIssue: async (id: number, issueData: any) => {
+  updateIssue: async (id: number, issueData: UpdateIssueRequest): Promise<Issue> => {
     try {
-      const response = await apiClient.put<ApiResponse<any>>(`/issues/${id}`, issueData);
+      const response = await apiClient.put<ApiResponse<Issue>>(`/issue/${id}`, issueData);
       return response.data.data;
     } catch (error) {
       console.error(`Error updating issue with id ${id}:`, error);
@@ -109,10 +112,9 @@ export const issueApi = {
   },
 
   // DELETE issue
-  deleteIssue: async (id: number) => {
+  deleteIssue: async (id: number): Promise<void> => {
     try {
-      const response = await apiClient.delete<ApiResponse<any>>(`/issues/${id}`);
-      return response.data.data;
+      await apiClient.delete<ApiResponse<null>>(`/issue/${id}`);
     } catch (error) {
       console.error(`Error deleting issue with id ${id}:`, error);
       throw error;
@@ -120,10 +122,10 @@ export const issueApi = {
   },
 
   // GET issues by status
-  getIssuesByStatus: async (status: string) => {
+  getIssuesByStatus: async (status: IssueStatus): Promise<Issue[]> => {
     try {
-      const response = await apiClient.get<ApiResponse<any>>(`/issues?status=${status}`);
-      return response.data.data;
+      const response = await apiClient.get<ApiResponse<Issue[]>>(`/issue?status=${status}`);
+      return response.data.data || [];
     } catch (error) {
       console.error(`Error fetching issues with status ${status}:`, error);
       throw error;
@@ -131,10 +133,10 @@ export const issueApi = {
   },
 
   // GET issues by priority
-  getIssuesByPriority: async (priority: string) => {
+  getIssuesByPriority: async (priority: IssuePriority): Promise<Issue[]> => {
     try {
-      const response = await apiClient.get<ApiResponse<any>>(`/issues?priority=${priority}`);
-      return response.data.data;
+      const response = await apiClient.get<ApiResponse<Issue[]>>(`/issue?priority=${priority}`);
+      return response.data.data || [];
     } catch (error) {
       console.error(`Error fetching issues with priority ${priority}:`, error);
       throw error;
@@ -142,10 +144,10 @@ export const issueApi = {
   },
 
   // GET issues by project
-  getIssuesByProject: async (projectId: number) => {
+  getIssuesByProject: async (projectId: number): Promise<Issue[]> => {
     try {
-      const response = await apiClient.get<ApiResponse<any>>(`/issues?project_id=${projectId}`);
-      return response.data.data;
+      const response = await apiClient.get<ApiResponse<Issue[]>>(`/issue?project_id=${projectId}`);
+      return response.data.data || [];
     } catch (error) {
       console.error(`Error fetching issues for project ${projectId}:`, error);
       throw error;

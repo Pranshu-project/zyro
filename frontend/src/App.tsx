@@ -30,7 +30,6 @@ import ManagerPage from "@/pages/manager/index";
 import EmployeePage from "@/pages/employee/index";
 
 import Project from "@/pages/manager/projects/Project";
-import ProjectList from "@/pages/manager/projects/ProjectList";
 import CreateProject from "@/pages/manager/projects/CreateProject";
 import ProjectDetails from "@/pages/manager/projects/ProjectDetails";
 import EditProject from "@/pages/manager/projects/EditProject";
@@ -185,20 +184,17 @@ function App() {
               </ProtectedRoute>
             }
           >
-            {/* Project module wrapper */}
-            <Route element={<Project />}>
-              <Route index element={<ProjectList />} />
-              <Route path="create" element={<CreateProject />} />
-              <Route path=":id" element={<ProjectDetails />} />
-              <Route path=":id/edit" element={<EditProject />} />
-              <Route path=":id/overview" element={<ProjectDetails />} />
-              <Route path=":id/issues" element={<ProjectDetails />} />
-              <Route path=":id/kanban" element={<ProjectDetails />} />
-              <Route path=":id/team" element={<ProjectDetails />} />
-              <Route path=":id/timeline" element={<ProjectDetails />} />
-              <Route path=":id/analytics" element={<ProjectDetails />} />
-              <Route path=":id/settings" element={<ProjectDetails />} />
-            </Route>
+            <Route index element={<Project />} />
+            <Route path="create" element={<CreateProject />} />
+            <Route path=":id" element={<ProjectDetails />} />
+            <Route path=":id/edit" element={<EditProject />} />
+            <Route path=":id/overview" element={<ProjectDetails />} />
+            <Route path=":id/issues" element={<ProjectDetails />} />
+            <Route path=":id/kanban" element={<ProjectDetails />} />
+            <Route path=":id/team" element={<ProjectDetails />} />
+            <Route path=":id/timeline" element={<ProjectDetails />} />
+            <Route path=":id/analytics" element={<ProjectDetails />} />
+            <Route path=":id/settings" element={<ProjectDetails />} />
           </Route>
 
           {/* ---------- ISSUES ---------- */}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import HomeHeader from "./HomeHeader";
@@ -9,19 +9,176 @@ import RecentIssues from "./RecentIssues";
 import { dashboardApi } from "../../../services/api";
 import { DashboardData } from "../../../services/api/types";
 
-/* ======================================================
-   Home Dashboard (Enhanced & Interactive)
-====================================================== */
+// ============================================================================
+// ANIMATION VARIANTS
+// ============================================================================
+
+const ANIMATION_VARIANTS = {
+  container: {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.3 },
+  },
+  stats: {
+    initial: { opacity: 0, y: 6 },
+    animate: { opacity: 1, y: 0 },
+    transition: { delay: 0.1 },
+  },
+  gridItem: {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0 },
+  },
+  projects: {
+    transition: { delay: 0.15 },
+  },
+  issues: {
+    transition: { delay: 0.2 },
+  },
+};
+
+// ============================================================================
+// LOADING STATE COMPONENT
+// ============================================================================
+
+const LoadingState = () => (
+  <div className="w-full min-h-screen flex flex-col items-center justify-center bg-gray-50/50">
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+      className="w-10 xs:w-12 h-10 xs:h-12 border-4 border-sky-500 border-t-transparent rounded-full mb-4"
+    />
+    <p className="text-sm xs:text-base text-gray-600">Loading Manager Dashboard</p>
+  </div>
+);
+
+// ============================================================================
+// ERROR STATE COMPONENT
+// ============================================================================
+
+interface ErrorStateProps {
+  error: string;
+  onRetry: () => void;
+}
+
+const ErrorState = ({ error, onRetry }: ErrorStateProps) => (
+  <div className="w-full min-h-screen flex items-center justify-center bg-gray-50/50 p-4">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
+      className="w-full max-w-md"
+    >
+      <div className="bg-white rounded-xl xs:rounded-2xl border border-red-100 shadow-lg overflow-hidden">
+        <div className="bg-gradient-to-r from-red-50 to-red-100 p-4 xs:p-6 border-b border-red-200">
+          <div className="flex items-center gap-3">
+            <div className="w-10 xs:w-12 h-10 xs:h-12 rounded-full bg-red-200 flex items-center justify-center flex-shrink-0">
+              <svg
+                className="w-6 xs:w-7 h-6 xs:h-7 text-red-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-base xs:text-lg font-semibold text-red-900">
+              Unable to Load Dashboard
+            </h3>
+          </div>
+        </div>
+        <div className="p-4 xs:p-6">
+          <p className="text-red-700 text-xs xs:text-sm mb-3 xs:mb-4">{error}</p>
+          <button
+            onClick={onRetry}
+            className="w-full px-3 xs:px-4 py-1.5 xs:py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors text-xs xs:text-sm font-medium"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  </div>
+);
+
+// ============================================================================
+// DASHBOARD CONTENT COMPONENT
+// ============================================================================
+
+interface DashboardContentProps {
+  data: DashboardData;
+}
+
+const DashboardContent = ({ data }: DashboardContentProps) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.3 }}
+    className="max-w-full space-y-4 xs:space-y-6"
+  >
+    {/* Header */}
+    <HomeHeader />
+
+    {/* Stats Section */}
+    {data.stats && (
+      <motion.div
+        initial={ANIMATION_VARIANTS.stats.initial}
+        animate={ANIMATION_VARIANTS.stats.animate}
+        transition={ANIMATION_VARIANTS.stats.transition}
+      >
+        <HomeStats stats={data.stats} />
+      </motion.div>
+    )}
+
+    {/* Projects & Issues Grid */}
+    <div className="grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-4 xs:gap-5 sm:gap-6 lg:gap-8">
+      <AnimatePresence mode="wait">
+        {data.recent_projects && (
+          <motion.div
+            key="recent-projects"
+            initial={ANIMATION_VARIANTS.gridItem.initial}
+            animate={ANIMATION_VARIANTS.gridItem.animate}
+            exit={ANIMATION_VARIANTS.gridItem.exit}
+            transition={ANIMATION_VARIANTS.projects.transition}
+            className="h-full"
+          >
+            <RecentProjects projects={data.recent_projects} />
+          </motion.div>
+        )}
+
+        {data.recent_issues && (
+          <motion.div
+            key="recent-issues"
+            initial={ANIMATION_VARIANTS.gridItem.initial}
+            animate={ANIMATION_VARIANTS.gridItem.animate}
+            exit={ANIMATION_VARIANTS.gridItem.exit}
+            transition={ANIMATION_VARIANTS.issues.transition}
+            className="h-full"
+          >
+            <RecentIssues issues={data.recent_issues} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  </motion.div>
+);
+
+// ============================================================================
+// MAIN HOME COMPONENT
+// ============================================================================
 
 const Home = () => {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  /* ======================================================
-     Fetch Dashboard Data
-  ====================================================== */
-  const fetchDashboardData = async () => {
+  // Memoized fetch function for efficiency
+  const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -33,108 +190,32 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchDashboardData();
   }, []);
 
-  /* ======================================================
-     Loading State
-  ====================================================== */
-  if (loading) {
-    return (
-      <div className="min-h-[70vh] flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-[3px] border-gray-200 border-t-indigo-500 mx-auto" />
-          <p className="mt-3 text-xs text-gray-500 tracking-wide">
-            Loading your workspace…
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Fetch data on mount
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
-  /* ======================================================
-     Error State
-  ====================================================== */
-  if (error) {
-    return (
-      <div className="min-h-[70vh] flex items-center justify-center">
-        <div className="bg-white/80 backdrop-blur-md border border-red-200 rounded-xl p-5 text-center max-w-sm w-full shadow-sm">
-          <p className="text-red-600 text-sm">{error}</p>
-          <button
-            onClick={fetchDashboardData}
-            className="mt-4 px-4 py-2 text-xs font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Render states
+  if (loading) return <LoadingState />;
+  if (error) return <ErrorState error={error} onRetry={fetchDashboardData} />;
+  if (!dashboardData) return <LoadingState />;
 
-  /* ======================================================
-     Main Dashboard
-  ====================================================== */
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: "easeOut" }}
-      className="min-h-screen"
-    >
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
-        {/* Header */}
-        <HomeHeader />
-
-        {/* Stats */}
-        {dashboardData?.stats && (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            <HomeStats stats={dashboardData.stats} />
-          </motion.div>
-        )}
-
-        {/* Projects & Issues */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
-          <AnimatePresence>
-            {dashboardData?.recent_projects && (
-              <motion.div
-                key="recent-projects"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ delay: 0.15 }}
-              >
-                <div className="h-full">
-                  <RecentProjects projects={dashboardData.recent_projects} />
-                </div>
-              </motion.div>
-            )}
-
-            {dashboardData?.recent_issues && (
-              <motion.div
-                key="recent-issues"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <div className="h-full">
-                  <RecentIssues issues={dashboardData.recent_issues} />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-      </section>
-    </motion.div>
+    <div className="w-full max-w-full bg-gray-50/50">
+      {/* Content */}
+      <div className="">
+        <motion.div
+          initial={ANIMATION_VARIANTS.container.initial}
+          animate={ANIMATION_VARIANTS.container.animate}
+          transition={ANIMATION_VARIANTS.container.transition}
+          className="px-3 sm:px-4 md:px-5 lg:px-6"
+        >
+          <DashboardContent data={dashboardData} />
+        </motion.div>
+      </div>
+    </div>
   );
 };
 

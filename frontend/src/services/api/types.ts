@@ -20,11 +20,12 @@ export interface DashboardCards {
 }
 
 export interface BackendRecentProject {
+  project_id: number;
   project_name: string;
   total_task: number;
   task_completed: number;
   project_completion_percentage: number;
-  team_members: ReadonlyArray<{
+  team_members?: ReadonlyArray<{
     id: number;
     name: string;
   }>;
@@ -116,4 +117,97 @@ export interface Project {
   teamMembers?: number;
   progress?: number;
   lastUpdated?: string;
+}
+
+// Project request types
+export interface CreateProjectRequest {
+  name: string;
+  status: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+  organization_id: number;
+}
+
+export interface UpdateProjectRequest {
+  name?: string;
+  status?: string;
+  description?: string;
+  start_date?: string;
+  end_date?: string;
+}
+
+// ======================================================
+// 🔹 ISSUE API TYPES
+// ======================================================
+
+export type IssueType =
+  | "story"
+  | "task"
+  | "bug"
+  | "epic"
+  | "subtask"
+  | "feature"
+  | "release"
+  | "documentation"
+  | "other";
+
+export type IssueStatus =
+  | "todo"
+  | "in_progress"
+  | "completed"
+  | "cancelled"
+  | "hold"
+  | "qa"
+  | "blocked";
+
+export type IssuePriority = "low" | "moderate" | "high" | "critical";
+
+export interface User {
+  id: number;
+  name: string;
+  email?: string;
+  avatar?: string;
+}
+
+export interface Issue {
+  id: number;
+  name: string;
+  description?: string;
+  type: IssueType;
+  status: IssueStatus;
+  priority: IssuePriority;
+  story_point?: number;
+  project_id: number;
+  project?: Project;
+  sprint_id?: number;
+  assigned_to?: number;
+  assigned_by?: number;
+  assignee?: User;
+  reporter?: User;
+  created_at: string;
+  updated_at: string;
+  labels?: string[];
+}
+
+export interface CreateIssueRequest {
+  name: string;
+  description?: string;
+  type: IssueType;
+  status?: IssueStatus;
+  priority: IssuePriority;
+  story_point?: number;
+  project_id: number;
+  sprint_id?: number | null;
+  assigned_to?: number | null;
+}
+
+export interface UpdateIssueRequest {
+  name?: string;
+  description?: string;
+  type?: IssueType;
+  status?: IssueStatus;
+  priority?: IssuePriority;
+  story_point?: number;
+  assigned_to?: number | null;
 }

@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { Calendar } from "lucide-react";
+import { Calendar, Sparkles } from "lucide-react";
 
 /* ======================================================
-   Home Header (Enhanced, Compact & Interactive)
+   Home Header – Modern, Clean & Premium
 ====================================================== */
 
 const HomeHeader = () => {
@@ -11,8 +11,8 @@ const HomeHeader = () => {
 
   const userName = user?.name || "Manager";
   const organizationName = user?.name
-    ? `${user.name}'s Organization`
-    : "Your Organization";
+    ? `${user.name}'s Workspace`
+    : "Your Workspace";
 
   /* Time-based Greeting */
   const hour = new Date().getHours();
@@ -27,27 +27,29 @@ const HomeHeader = () => {
   });
 
   return (
-    <div
-      className="
-        flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3
-        transition
-      "
-    >
-      {/* Left Content */}
-      <div>
-        <h1 className="text-lg font-semibold text-gray-900 leading-tight">
-          {organizationName}
-        </h1>
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      
+      {/* Left Section */}
+      <div className="space-y-1">
+        <div className="flex items-center gap-2">
+          <Sparkles size={18} className="text-indigo-500" />
+          <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+            {organizationName}
+          </h1>
+        </div>
 
-        <p className="text-xs text-gray-600 mt-0.5">
+        <p className="text-sm text-gray-600">
           {greeting},{" "}
-          <span className="font-medium text-gray-800">{userName}</span> 👋
+          <span className="font-medium text-gray-800">
+            {userName}
+          </span>
+          <span className="ml-1">👋</span>
         </p>
       </div>
 
-      {/* Right Content - Date */}
-      <div className="flex items-center gap-2 text-xs text-gray-600 bg-white/70 px-3 py-1.5 rounded-lg border border-gray-200">
-        <Calendar size={14} className="text-indigo-500" />
+      {/* Right Section – Date Badge */}
+      <div className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white/70 px-4 py-2 text-sm text-gray-700 shadow-sm backdrop-blur-md">
+        <Calendar size={16} className="text-indigo-500" />
         <span className="font-medium">{today}</span>
       </div>
     </div>

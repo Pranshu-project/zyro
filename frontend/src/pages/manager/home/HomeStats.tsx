@@ -103,16 +103,16 @@ const StatCard = ({
       />
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-4">
         <div
-          className={`w-9 h-9 rounded-lg flex items-center justify-center ${theme.bg} ${theme.text}`}
+          className={`w-11 h-11 rounded-lg flex items-center justify-center ${theme.bg} ${theme.text}`}
         >
-          <Icon size={17} strokeWidth={2.2} />
+          <Icon size={20} strokeWidth={2.2} />
         </div>
 
         <div
-          className={`flex items-center gap-1 px-2 py-[2px]
-            rounded-full text-[10px] font-semibold
+          className={`flex items-center gap-1 px-2.5 py-1
+            rounded-full text-xs font-semibold
             ${
               trendType === "up"
                 ? "bg-green-50 text-green-700"
@@ -121,9 +121,9 @@ const StatCard = ({
                 : "bg-gray-100 text-gray-600"
             }`}
         >
-          {trendType === "up" && <Plus size={10} />}
-          {trendType === "down" && <Minus size={10} />}
-          {trendType === "neutral" && <Minus size={10} />}
+          {trendType === "up" && <Plus size={12} />}
+          {trendType === "down" && <Minus size={12} />}
+          {trendType === "neutral" && <Minus size={12} />}
           <span>{Math.abs(trend)}%</span>
         </div>
       </div>
@@ -133,13 +133,13 @@ const StatCard = ({
         initial={{ scale: 0.95 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.2 }}
-        className="text-2xl font-semibold text-gray-900 leading-none"
+        className="text-3xl font-semibold text-gray-900 leading-none"
       >
         {value.toLocaleString()}
       </motion.h3>
 
       {/* Label */}
-      <p className="mt-1 text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+      <p className="mt-2 text-xs font-medium text-gray-500 uppercase tracking-wide">
         {title}
       </p>
     </motion.div>

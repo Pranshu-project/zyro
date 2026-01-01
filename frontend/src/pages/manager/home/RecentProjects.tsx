@@ -1,6 +1,5 @@
 import {
   Folder,
-  User,
   Loader2,
   AlertCircle,
   ChevronRight,
@@ -64,35 +63,35 @@ const ProjectItem = ({ project, onClick }: ProjectItemProps) => (
 
     <div className="flex items-start gap-3">
       {/* Badge */}
-      <ProjectBadge projectName={project.name} size="sm" />
+      <ProjectBadge projectName={project.name} size="md" />
 
       {/* Content */}
       <div className="flex-1 min-w-0">
         {/* Title */}
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-medium text-gray-900 truncate">
+          <h3 className="text-base font-medium text-gray-900 truncate">
             {project.name}
           </h3>
 
           <ChevronRight
-            size={14}
+            size={16}
             className="text-gray-400 opacity-0 group-hover:opacity-100 transition"
           />
         </div>
 
         {/* Meta */}
-        <div className="flex flex-wrap items-center gap-2 mt-1 max-lg:text-[10px]">
+        <div className="flex flex-wrap items-center gap-2 mt-1.5 max-lg:text-xs">
           <span
-            className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${getStatusPill(
+            className={`text-xs px-2.5 py-1 rounded-full font-medium ${getStatusPill(
               project.status
             )}`}
           >
             {project.status}
           </span>
-
-          {Array.isArray(project.team_members_details) &&
+{/* 
+          {project.team_members_details && Array.isArray(project.team_members_details) &&
           project.team_members_details.length > 0 ? (
-            <span className="text-[11px] text-gray-500 truncate">
+            <span className="text-xs text-gray-500 truncate">
               {project.team_members_details
                 .slice(0, 2)
                 .map((m) => m.name)
@@ -104,31 +103,31 @@ const ProjectItem = ({ project, onClick }: ProjectItemProps) => (
               )}
             </span>
           ) : (
-            <span className="flex items-center text-[11px] text-gray-500">
-              <User size={11} className="mr-1" />
-              {project.team_members}
+            <span className="flex items-center text-xs text-gray-500">
+              <User size={12} className="mr-1" />
+              {project.team_members || 0}
             </span>
-          )}
+          )} */}
 
-          <span className="text-[11px] text-gray-500">
+          <span className="text-xs text-gray-500">
             {project.task_completed}/{project.total_task} tasks
           </span>
         </div>
 
         {/* Progress */}
-        <div className="mt-2">
+        <div className="mt-3">
           <div className="flex items-center gap-2">
-            <div className="flex-1 bg-gray-200 rounded-full h-1 overflow-hidden">
+            <div className="flex-1 bg-gray-200 rounded-full h-1.5 overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${project.progress}%` }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
-                className={`h-1 rounded-full ${getProgressColor(
+                className={`h-1.5 rounded-full ${getProgressColor(
                   project.progress
                 )}`}
               />
             </div>
-            <span className="text-[11px] text-gray-600 min-w-[28px] text-right">
+            <span className="text-xs text-gray-600 min-w-[32px] text-right">
               {project.progress}%
             </span>
           </div>
@@ -160,17 +159,17 @@ const RecentProjects: React.FC<RecentProjectsProps> = ({
     <div className="bg-white/70 backdrop-blur-md border border-gray-200/60 rounded-xl p-4 flex flex-col h-full">
       
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-          <span className="p-1.5 rounded-lg bg-blue-50 text-blue-600">
-            <Folder size={14} />
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-base font-semibold text-gray-800 flex items-center gap-2">
+          <span className="p-2 rounded-lg bg-blue-50 text-blue-600">
+            <Folder size={16} />
           </span>
           Recent Projects
         </h2>
 
         <button
           onClick={() => navigate("/projects")}
-          className="text-xs font-medium text-blue-600 hover:underline"
+          className="text-sm font-medium text-blue-600 hover:underline"
         >
           View all
         </button>
@@ -180,32 +179,32 @@ const RecentProjects: React.FC<RecentProjectsProps> = ({
       <div className="flex-1 min-h-0">
         {loading && (
           <div className="flex flex-col items-center justify-center h-40 text-gray-400">
-            <Loader2 size={18} className="animate-spin mb-2 text-blue-500" />
-            <p className="text-xs">Loading projects…</p>
+            <Loader2 size={20} className="animate-spin mb-2 text-blue-500" />
+            <p className="text-sm">Loading projects…</p>
           </div>
         )}
 
         {error && !loading && (
           <div className="flex flex-col items-center justify-center h-40 text-red-500">
-            <AlertCircle size={18} className="mb-2" />
-            <p className="text-xs text-center">{error}</p>
+            <AlertCircle size={20} className="mb-2" />
+            <p className="text-sm text-center">{error}</p>
           </div>
         )}
 
         {!loading && !error && visibleProjects.length === 0 && (
           <div className="flex flex-col items-center justify-center h-40 text-gray-400">
-            <Folder size={18} className="mb-2 opacity-50" />
-            <p className="text-xs">No recent projects</p>
+            <Folder size={20} className="mb-2 opacity-50" />
+            <p className="text-sm">No recent projects</p>
           </div>
         )}
 
         {!loading && !error && visibleProjects.length > 0 && (
           <ul className="space-y-3">
-            {visibleProjects.map((project) => (
+            {visibleProjects.map((project, index) => (
               <ProjectItem
-                key={project.id}
+                key={project.id ?? `project-${index}`}
                 project={project}
-                onClick={() => navigate(`/projects/${project.id}`)}
+                onClick={() => navigate(`/projects/${project.id}/overview`)}
               />
             ))}
           </ul>

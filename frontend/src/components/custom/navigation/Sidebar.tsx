@@ -98,36 +98,36 @@ const Sidebar = () => {
       >
         {/* Logo */}
         <div className="
-  h-16 px-4
+  h-16 md:h-14 lg:h-16 px-4
   flex items-center justify-between
   border-b border-gray-200
   bg-white/80 backdrop-blur-md
 ">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-green-500 text-white flex items-center justify-center font-bold">
+            <div className="w-7 md:w-6 lg:w-8 h-7 md:h-6 lg:h-8 rounded-lg bg-green-500 text-white flex items-center justify-center font-bold text-sm md:text-xs lg:text-base">
               Z
             </div>
-            <span className="font-semibold text-gray-700 text-lg">Zyro</span>
+            <span className="font-semibold text-gray-700 text-base md:text-sm lg:text-lg">Zyro</span>
           </div>
 
           <button
             onClick={() => setIsMobileOpen(false)}
-            className="md:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-600"
+            className="md:hidden p-1 md:p-1.5 rounded-lg hover:bg-gray-100 text-gray-600"
           >
             <X size={16} />
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 px-3 py-3 md:py-2.5 lg:py-4 space-y-0.5 md:space-y-0.5 lg:space-y-1">
           {navItems.map(({ path, label, icon: Icon }) => (
             <NavLink
               key={path}
               to={path}
               className={({ isActive }) =>
                 `
-                group flex items-center gap-3 px-3 py-2 rounded-lg
-                text-xs font-medium transition-all
+                group flex items-center gap-3 px-3 py-1.5 md:py-1.5 lg:py-2 rounded-lg
+                text-xs md:text-xs lg:text-xs font-medium transition-all
                 ${isActive
                   ? "bg-green-50 text-green-700 shadow-sm"
                   : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
@@ -142,19 +142,19 @@ const Sidebar = () => {
         </nav>
 
         {/* User Footer */}
-        <div className="px-4 py-4 border-t border-gray-200 bg-gray-50/60">
+        <div className="px-4 py-3 md:py-2.5 lg:py-4 border-t border-gray-200 bg-gray-50/60">
           {user ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 md:gap-2.5 lg:gap-4">
 
               {/* Avatar */}
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 
-                      flex items-center justify-center text-white text-base font-semibold shadow-sm">
+              <div className="w-9 md:w-8 lg:w-10 h-9 md:h-8 lg:h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 
+                      flex items-center justify-center text-white text-sm md:text-xs lg:text-base font-semibold shadow-sm">
                 {user.name.charAt(0).toUpperCase()}
               </div>
 
               {/* User Info */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-800 truncate">
+                <p className="text-xs md:text-xs lg:text-sm font-semibold text-gray-800 truncate">
                   {user.name}
                 </p>
                 <p className="text-xs text-gray-500 truncate">

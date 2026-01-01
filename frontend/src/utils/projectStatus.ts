@@ -1,5 +1,6 @@
 // Project status utility functions
 
+// Based on the actual ProjectStatus enum in backend: ACTIVE, INACTIVE, UPCOMING, DELAYED, COMPLETED
 export const getStatusColor = (status?: string) => {
   if (!status) return "bg-gray-100 text-gray-800";
 
@@ -14,12 +15,13 @@ export const getStatusColor = (status?: string) => {
       return "bg-red-100 text-red-800";
     case "completed":
       return "bg-green-100 text-green-800";
+    // Additional statuses that may be used in the UI
+    case "in progress":
+      return "bg-green-100 text-green-800";
     case "draft":
       return "bg-purple-100 text-purple-800";
     case "archived":
       return "bg-gray-100 text-gray-800";
-    case "in progress":
-      return "bg-green-100 text-green-800";
     case "pending":
       return "bg-yellow-100 text-yellow-800";
     case "on hold":
@@ -29,6 +31,7 @@ export const getStatusColor = (status?: string) => {
   }
 };
 
+// Based on the actual ProjectStatus enum in backend: ACTIVE, INACTIVE, UPCOMING, DELAYED, COMPLETED
 export const getStatusIcon = (status?: string) => {
   if (!status) return null;
 
@@ -43,6 +46,8 @@ export const getStatusIcon = (status?: string) => {
     case "pending":
     case "on hold":
       return "AlertCircle";
+    case "in progress":
+      return "CheckCircle";
     default:
       return "Clock";
   }

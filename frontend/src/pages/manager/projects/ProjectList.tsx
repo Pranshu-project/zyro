@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Folder, CheckCircle, Clock, AlertCircle, Plus, Search } from "lucide-react";
+import { CheckCircle, Clock, AlertCircle, Plus, Search, Folder, Users, TrendingUp, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ProjectCard from "@/components/custom/pages/projects/ProjectCard";
+import CreateProjectModal from "@/components/custom/pages/projects/CreateProjectModal";
 import { Project } from "@/services/api/types";
 import { projectApi } from "@/services/api/projectApi";
 
@@ -12,6 +13,7 @@ const ProjectList = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const fetchProjects = async () => {
@@ -107,7 +109,7 @@ const ProjectList = () => {
           </div>
           
           <button 
-            onClick={() => navigate('/projects/create')}
+            onClick={() => setIsCreateModalOpen(true)}
             className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-sky-600 to-blue-600 text-white rounded-lg hover:from-sky-700 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg w-full sm:w-auto"
           >
             <Plus size={18} />
@@ -133,23 +135,11 @@ const ProjectList = () => {
         
         <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-green-100 text-green-600">
-              <CheckCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Completed</p>
-              <p className="text-xl font-bold text-gray-800">{projects.filter(p => p.status?.toLowerCase() === 'completed').length}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-          <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-blue-100 text-blue-600">
-              <Clock className="w-5 h-5" />
+              <TrendingUp className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm text-gray-600">Active</p>
+              <p className="text-sm text-gray-600">Active Projects</p>
               <p className="text-xl font-bold text-gray-800">{projects.filter(p => p.status?.toLowerCase() === 'active').length}</p>
             </div>
           </div>
@@ -157,12 +147,24 @@ const ProjectList = () => {
         
         <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-yellow-100 text-yellow-600">
-              <AlertCircle className="w-5 h-5" />
+            <div className="p-2 rounded-lg bg-green-100 text-green-600">
+              <CheckCircle className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm text-gray-600">Pending</p>
-              <p className="text-xl font-bold text-gray-800">{projects.filter(p => p.status?.toLowerCase() === 'upcoming' || p.status?.toLowerCase() === 'delayed').length}</p>
+              <p className="text-sm text-gray-600">Completed Projects</p>
+              <p className="text-xl font-bold text-gray-800">{projects.filter(p => p.status?.toLowerCase() === 'completed').length}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-purple-100 text-purple-600">
+              <Calendar className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-600">Upcoming Projects</p>
+              <p className="text-xl font-bold text-gray-800">{projects.filter(p => p.status?.toLowerCase() === 'upcoming').length}</p>
             </div>
           </div>
         </div>
@@ -197,6 +199,13 @@ const ProjectList = () => {
           </AnimatePresence>
         </div>
       )}
+
+      {/* Create Project Modal */}
+      <CreateProjectModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={fetchProjects}
+      />
     </div>
   );
 };

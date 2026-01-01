@@ -117,13 +117,14 @@ export const dashboardApi = {
    🔹 Recent Projects Mapping (FIXED)
 -------------------------------- */
 const recent_projects: RecentProject[] =
-  backend.recent_projects.map((project, index) => {
-    const teamMembersArray = Array.isArray(project.team_members)
+  backend.recent_projects.map((project) => {
+    // Handle missing team_members field from backend
+    const teamMembersArray = project.team_members && Array.isArray(project.team_members)
       ? project.team_members
       : [];
 
     return {
-      id: index + 1,
+      id: project.project_id,
       name: project.project_name,
       progress: project.project_completion_percentage,
       total_task: project.total_task,
@@ -134,7 +135,7 @@ const recent_projects: RecentProject[] =
           ? "completed"
           : "active",
 
-      // ✅ SAFE
+      // ✅ SAFE - use length of teamMembersArray or fallback to 0
       team_members: teamMembersArray.length,
       team_members_details: teamMembersArray,
 

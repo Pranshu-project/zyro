@@ -1,18 +1,5 @@
 import axios from 'axios';
-import { ApiResponse } from './types';
-
-// Project interface for API
-interface ApiProject {
-  id: number | string;
-  name: string;
-  status: string;
-  description: string;
-  created_by: string;
-  start_date: string;
-  end_date: string;
-  created_at: string;
-  updated_at: string;
-}
+import { ApiResponse, Project, CreateProjectRequest, UpdateProjectRequest } from './types';
 
 // Create axios instance
 const apiClient = axios.create({
@@ -78,9 +65,9 @@ apiClient.interceptors.response.use(
 // Project API functions
 export const projectApi = {
   // GET all projects
-  getProjects: async (): Promise<ApiProject[]> => {
+  getProjects: async (): Promise<Project[]> => {
     try {
-      const response = await apiClient.get<ApiResponse<ApiProject[]>>('/projects');
+      const response = await apiClient.get<ApiResponse<Project[]>>('/project');
       return response.data.data;
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -89,9 +76,9 @@ export const projectApi = {
   },
 
   // GET project by ID
-  getProjectById: async (id: number): Promise<ApiProject> => {
+  getProjectById: async (id: number): Promise<Project> => {
     try {
-      const response = await apiClient.get<ApiResponse<ApiProject>>(`/projects/${id}`);
+      const response = await apiClient.get<ApiResponse<Project>>(`/project/${id}`);
       return response.data.data;
     } catch (error) {
       console.error(`Error fetching project with id ${id}:`, error);
@@ -100,20 +87,39 @@ export const projectApi = {
   },
 
   // POST create project
-  createProject: async (projectData: any): Promise<ApiProject> => {
+  createProject: async (projectData: CreateProjectRequest): Promise<Project> => {
     try {
-      const response = await apiClient.post<ApiResponse<ApiProject>>('/projects', projectData);
+      console.log("Creating project with data:", projectData);
+      const response = await apiClient.post<ApiResponse<Project>>('/project', projectData);
+      console.log("Project creation response:", response.data);
+      
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Failed to create project");
+      }
+      
       return response.data.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating project:', error);
-      throw error;
+      
+      // Extract meaningful error message
+      let errorMessage = "Failed to create project";
+      
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      throw new Error(errorMessage);
     }
   },
 
   // PUT update project
-  updateProject: async (id: number, projectData: any): Promise<ApiProject> => {
+  updateProject: async (id: number, projectData: UpdateProjectRequest): Promise<Project> => {
     try {
-      const response = await apiClient.put<ApiResponse<ApiProject>>(`/projects/${id}`, projectData);
+      const response = await apiClient.put<ApiResponse<Project>>(`/project/${id}`, projectData);
       return response.data.data;
     } catch (error) {
       console.error(`Error updating project with id ${id}:`, error);
@@ -122,24 +128,34 @@ export const projectApi = {
   },
 
   // DELETE project
-  deleteProject: async (id: number): Promise<ApiProject> => {
+  deleteProject: async (id: number): Promise<void> => {
     try {
-      const response = await apiClient.delete<ApiResponse<ApiProject>>(`/projects/${id}`);
-      return response.data.data;
+      await apiClient.delete<ApiResponse<null>>(`/project/${id}`);
+      // Backend returns success: true, message: "Project deleted successfully", data: null
     } catch (error) {
       console.error(`Error deleting project with id ${id}:`, error);
       throw error;
     }
   },
 
-  // GET projects by status
-  getProjectsByStatus: async (status: string): Promise<ApiProject[]> => {
-    try {
-      const response = await apiClient.get<ApiResponse<ApiProject[]>>(`/projects?status=${status}`);
-      return response.data.data;
-    } catch (error) {
-      console.error(`Error fetching projects with status ${status}:`, error);
-      throw error;
-    }
-  },
+  // GET projects by status - This function is not supported by backend, so removing it
+  // getProjectsByStatus: async (status: string): Promise<ApiProject[]> => {
+  //   try {
+  //     const response = await apiClient.get<ApiResponse<ApiProject[]>>(`/projects?status=${status}`);
+  //     return response.data.data;
+  //   } catch (error) {
+  //     console.error(`Error fetching projects with status ${status}:`, error);
+  //     throw error;
+  //   }
+  // },
+
 };
+
+// Export as projectService for consistency
+export const projectService = projectApi;
+
+// Export getAll method for compatibility
+export const getAll = projectApi.getProjects;
+
+// Re-export Project type
+export type { Project };

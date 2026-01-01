@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Folder, Calendar, Users, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Calendar, Users, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import DeleteProjectModal from "@/components/custom/pages/projects/DeleteProjectModal";
 import { projectApi } from "@/services/api/projectApi";
 // import { Project } from "@/services/api/types"; // Not using this since it's for home page
@@ -21,13 +21,15 @@ export interface Project {
   lastUpdated?: string;
 }
 import { getStatusColor, getStatusIcon } from "@/utils/projectStatus";
+import ProjectBadge from "@/components/custom/ProjectBadge";
 
 interface ProjectCardProps {
   project: Project;
   refresh: () => void;
+  onEdit?: (id: number) => void;
 }
 
-const ProjectCard = ({ project, refresh }: ProjectCardProps) => {
+const ProjectCard = ({ project, refresh, onEdit }: ProjectCardProps) => {
   const navigate = useNavigate();
   const [showDelete, setShowDelete] = useState(false);
 
@@ -53,8 +55,8 @@ const ProjectCard = ({ project, refresh }: ProjectCardProps) => {
     >
       <div className="p-4 sm:p-5">
         <div className="flex items-start gap-2 min-w-0 mb-3">
-          <div className="p-2 rounded-lg bg-sky-100 text-sky-600 flex-shrink-0">
-            <Folder className="w-5 h-5" />
+          <div className="p-2 rounded-lg  text-sky-600 flex-shrink-0">
+            <ProjectBadge projectName={project.name} size="md" />
           </div>
           <h3 className="font-bold text-gray-800 truncate flex-1">{project.name}</h3>
         </div>
@@ -95,7 +97,7 @@ const ProjectCard = ({ project, refresh }: ProjectCardProps) => {
               View
             </button>
             <button 
-              onClick={(e) => { e.stopPropagation(); navigate(`/projects/${project.id}/edit`); }}
+              onClick={(e) => { e.stopPropagation(); onEdit?.(Number(project.id)); }}
               className="text-xs px-3 py-1.5 bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors whitespace-nowrap"
             >
               Edit
