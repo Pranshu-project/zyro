@@ -7,6 +7,7 @@ import SignUp from "@/components/custom/pages/auth/SignUp";
 import Login from "@/components/custom/pages/auth/Login";
 import Forgot from "@/components/custom/pages/auth/Forgot";
 import Reset from "@/components/custom/pages/auth/Reset";
+import AcceptInvitation from "@/components/custom/pages/auth/AcceptInvitation";
 import PageTransitionWrapper from "@/components/custom/pages/auth/PageTransitionWrapper";
 
 import ProtectedRoute from "@/routes/ProtectedRoute";
@@ -122,6 +123,17 @@ function App() {
               <PublicRoute>
                 <PageTransitionWrapper>
                   <Reset />
+                </PageTransitionWrapper>
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/verify-token/:raw_token"
+            element={
+              <PublicRoute>
+                <PageTransitionWrapper>
+                  <AcceptInvitation />
                 </PageTransitionWrapper>
               </PublicRoute>
             }
