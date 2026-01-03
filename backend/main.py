@@ -41,7 +41,8 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5174",
         "https://zyro-g2c4.onrender.com",
-        "https://zyro-67cv9686v-pranshus-projects-daa60a75.vercel.app"
+        "https://zyro-67cv9686v-pranshus-projects-daa60a75.vercel.app",
+        "https://zyro-2dox.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
