@@ -11,6 +11,16 @@ interface EditProjectModalProps {
   onClose: () => void;
   onSuccess?: () => void;
 }
+function mapProjectToFormData(data: any): ProjectFormData {
+  return {
+    name: data.name || "",
+    description: data.description ?? "", // handle null
+    status: data.status as ProjectFormData["status"], // cast enum
+    start_date: data.start_date ? data.start_date.split("T")[0] : "",
+    end_date: data.end_date ? data.end_date.split("T")[0] : "",
+    organization_id: data.organization_id || 1,
+  };
+}
 
 const EditProjectModal: React.FC<EditProjectModalProps> = ({
   isOpen,
@@ -22,25 +32,27 @@ const EditProjectModal: React.FC<EditProjectModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [project, setProject] = useState<ProjectFormData | null>(null);
 
-  useEffect(() => {
-    if (isOpen && projectId) {
-      const fetchProject = async () => {
-        try {
-          setIsLoading(true);
-          const res = await projectApi.getProjectById(projectId);
-          setProject(res);
-        } catch (err) {
-          console.error(err);
-          toast.error("Failed to load project");
-          onClose();
-        } finally {
-          setIsLoading(false);
-        }
-      };
+ useEffect(() => {
+  if (isOpen && projectId) {
+    const fetchProject = async () => {
+      try {
+        setIsLoading(true);
+        const res = await projectApi.getProjectById(projectId);
 
-      fetchProject();
-    }
-  }, [isOpen, projectId, onClose]);
+        // Map backend response to ProjectFormData
+        setProject(mapProjectToFormData(res));
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to load project");
+        onClose();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProject();
+  }
+}, [isOpen, projectId, onClose]);
 
   const handleSubmit = async (formData: ProjectFormData) => {
     try {
