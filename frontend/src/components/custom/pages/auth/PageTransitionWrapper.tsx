@@ -26,7 +26,7 @@ const PageTransitionWrapper: React.FC<PageTransitionWrapperProps> = ({ children 
   };
 
   const pageTransition = {
-    type: "spring",
+    type: "spring" as const,
     stiffness: 100,
     damping: 15,
     duration: 1.2,
