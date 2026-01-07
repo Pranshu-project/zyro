@@ -1,7 +1,7 @@
 """added a model and set password null as true
 
 Revision ID: 4266a73833f3
-Revises: 60f00796847f
+Revises: 2eed5761779a
 Create Date: 2025-12-31 23:45:17.346109
 
 """
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = '4266a73833f3'
-down_revision: Union[str, None] = '60f00796847f'
+down_revision: Union[str, None] = '2eed5761779a'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
