@@ -246,6 +246,7 @@ export interface CreateIssueRequest {
   project_id: number;
   sprint_id?: number | null;
   assigned_to?: number | null;
+  time_estimate?: number;
 }
 
 export interface UpdateIssueRequest {
@@ -256,6 +257,7 @@ export interface UpdateIssueRequest {
   priority?: IssuePriority;
   story_point?: number;
   assigned_to?: number | null;
+  time_estimate?: number;
 }
 
 /* ======================================================
@@ -280,3 +282,62 @@ export interface KanbanColumn {
 }
 
 export type KanbanBoard = Record<IssueStatus, Issue[]>;
+
+/* ======================================================
+   🔹 SPRINT — CORE TYPES
+====================================================== */
+
+export type SprintStatus =
+  | "todo"
+  | "in_progress"
+  | "completed"
+  | "cancelled"
+  | "transferred";
+
+export interface Sprint {
+  id: number;
+  sprint_id: string;
+  name: string;
+  project_id: number;
+  start_date: string | null;
+  end_date: string | null;
+  status: SprintStatus;
+  data: Record<string, any> | null;
+  created_at: string;
+  updated_at: string;
+  project?: Project;
+  issues?: Issue[];
+}
+
+/* ======================================================
+   🔹 SPRINT — REQUEST DTOs
+====================================================== */
+
+export interface CreateSprintRequest {
+  name: string;
+  project_id: number;
+  start_date: string | null;
+  end_date: string | null;
+  status: SprintStatus;
+  data?: Record<string, any> | null;
+}
+
+export interface UpdateSprintRequest {
+  name?: string;
+  start_date?: string | null;
+  end_date?: string | null;
+  status?: SprintStatus;
+  data?: Record<string, any> | null;
+}
+
+/* ======================================================
+   🔹 SPRINT — DASHBOARD
+====================================================== */
+
+export interface SprintDashboard {
+  total_sprints: number;
+  in_progress_sprints: number;
+  completed_sprints: number;
+  cancelled_sprints: number;
+  transferred_sprints: number;
+}
