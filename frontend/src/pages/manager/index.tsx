@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Home from './home/Home';
 import Issue from './issue/Issue';
@@ -8,6 +8,8 @@ import ProjectList from './projects/ProjectList';
 import CreateProject from './projects/CreateProject';
 import EditProject from './projects/EditProject';
 import ProjectDetails from './projects/ProjectDetails';
+import Sprint from './sprints/Sprint';
+import SprintDetail from './sprints/SprintDetail';
 import SettingsLayout from './settings/SettingsLayout';
 import OrganizationSettings from './settings/OrganizationSettings';
 import ProfileSettings from './settings/ProfileSettings';
@@ -15,16 +17,22 @@ import BillingSettings from './settings/BillingSettings';
 import SecuritySettings from './settings/SecuritySettings';
 
 const ManagerPage = () => {
+  const location = useLocation();
+  console.log("ManagerPage component rendered, current path:", location.pathname);
   return (
     <Routes>
-      {/* Default manager dashboard (home) */}
-      <Route index element={<Home />} />
+      {/* Sprint routes - must be before index to avoid matching issues */}
+      <Route path="sprints" element={<Sprint />} />
+      <Route path="sprints/:id" element={<SprintDetail />} />
+      
+      {/* Issue routes */}
+      <Route path="issues/*" element={<Issue />} />
       
       {/* Home route */}
       <Route path="home/*" element={<Home />} />
       
-      {/* Issue routes */}
-      <Route path="issues/*" element={<Issue />} />
+      {/* Default manager dashboard (home) */}
+      <Route index element={<Home />} />
       
       {/* Project routes */}
       <Route path="projects" element={<Project />}>        
